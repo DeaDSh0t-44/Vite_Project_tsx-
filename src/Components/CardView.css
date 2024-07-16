@@ -1,0 +1,137 @@
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+.card-view {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0;
+}
+
+.card {
+  border: 1px solid #F3F4F6;
+  border-radius: 10px;
+}
+
+.card-component {
+  padding: 10px;
+}
+
+.company-name {
+  background-color: #F8F9FA;  
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  border-radius: 10px 10px 0 0;
+  color: #374151;
+  font-size: 16px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.invoice-details {
+  font-size: 14px;
+  padding: 10px;
+  display: flex;
+  font-family: 'Figtree', sans-serif;
+}
+
+.invoice-Number {
+  padding: 5px 20px 5px 5px;
+  color: #9CA3AF;
+  font-size: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  word-wrap: break-word;
+}
+
+.invoice-Number-value {
+  color: #4B5563;
+  font-size: 14px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.invoice-Date {
+  padding: 5px 20px;
+  color: #9CA3AF;
+  font-size: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  word-wrap: break-word;
+}
+
+.invoice-Date-Value {
+  color: #4B5563;
+  font-size: 14px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.invoice-Amount {
+  padding: 5px 5px 5px 20px;
+  text-align: right;
+  color: #9CA3AF;
+  font-size: 10px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  word-wrap: break-word;
+}
+
+.invoice-Amount-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  color: #4B5563;
+  font-size: 14px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  word-wrap: break-word;
+}
+
+.status {
+  padding: 3px 6px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status.few-issues {
+  background-color: #FFF9ED;
+  border: 1px solid #FEEDC3;
+  width: 15%;
+  height: 10%;
+  color: #EE9D2B;
+  font-size: 8px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.status.no-issues {
+  background-color: #EFFFF5;
+  border: 1px solid #CCEBD7;
+  width: 15%;
+  height: 10%;
+  color: #309054;
+  font-size: 8px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.search-item {
+  color: #374151;
+  font-size: 16px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 600;
+  word-wrap: break-word;
+}

@@ -1,0 +1,68 @@
+@import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+
+.tabs-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 0px 10px 0px;
+    border: none;
+    color: #7F568F;
+font-size: 18px;
+font-family: Figtree;
+font-weight: 600;
+word-wrap: break-word;
+width: 420px;
+  }
+  
+  .tabs {
+    display: flex;
+    border-collapse: collapse;
+  }
+  
+  .tab {
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #6c6c6c; 
+    border-collapse: collapse;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Figtree',sans-serif;
+  }
+  
+  .tab.active {
+    color: #6c4791; 
+    border-bottom: 3px solid #6c4791;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Figtree',sans-serif;
+  }
+  
+.toggle-buttons {
+    display: flex;
+  }
+  
+  .toggle-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 20px; 
+    background-color: white;
+    color: #F6F2F7;
+    transition: background-color 0.3s;
+    border-radius: 4px;
+  }
+  
+  .toggle-button.active {
+    background-color: #F6F2F7; 
+    color: #7F568F; 
+  }
+  
+  .toggle-button:not(:last-child) {
+    margin-right: 5px;
+  }
