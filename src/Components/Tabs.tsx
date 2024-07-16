@@ -17,7 +17,7 @@ const Tabs: React.FC<TabsProps> = ({ view, setView, activeTab, setActiveTab }) =
   };
 
   return (
-    <div className="tabs-container">
+    <div className="tabs-contai+ner">
       <div className="tabs">
         <div
           className={`tab ${activeTab === 'inbox' ? 'active' : ''}`}
