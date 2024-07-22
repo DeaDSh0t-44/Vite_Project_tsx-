@@ -13,11 +13,11 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ view, setView, activeTab, setActiveTab }) => {
   const handleSetActiveTab = (tab: string) => {
     setActiveTab(tab);
-    setView(tab);
+    // Remove this line: setView(tab);
   };
 
   return (
-    <div className="tabs-contai+ner">
+    <div className="tabs-container">
       <div className="tabs">
         <div
           className={`tab ${activeTab === 'inbox' ? 'active' : ''}`}

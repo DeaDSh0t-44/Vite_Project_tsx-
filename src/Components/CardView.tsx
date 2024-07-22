@@ -1,15 +1,8 @@
 import React from 'react';
 import Tabs from './Tabs';
 import './CardView.css';
+import { Invoice } from '../types';
 
-interface Invoice {
-  vendor: string;
-  status: string;
-  statusText: string;
-  invoiceNumber: string;
-  dueDate: string;
-  amount: string;
-}
 
 interface CardViewProps {
   invoices: Invoice[];
@@ -35,8 +28,9 @@ const CardView: React.FC<CardViewProps> = ({ invoices, view, setView, activeTab,
       <Tabs view={view} setView={setView} activeTab={activeTab} setActiveTab={setActiveTab} />
       {invoices.map((invoice, index) => (
         <div key={index} className="card">
-          <div className="company-name">{invoice.vendor}
-            <div className={`status ${invoice.status}`}>{invoice.statusText}</div>
+          <div className="company-name">{invoice.vendorInformation && invoice.vendorInformation.vendorName || 'Unknown Vendor'}
+            <div className={`status ${invoice.invoiceDifficulty}`}>
+              {invoice.invoiceDifficulty.charAt(0).toUpperCase() +  invoice.invoiceDifficulty.slice(1).toLowerCase()}</div>
           </div>
           <div>
             <div className="invoice-details">
@@ -44,10 +38,11 @@ const CardView: React.FC<CardViewProps> = ({ invoices, view, setView, activeTab,
                 <div className="invoice-Number-value">{invoice.invoiceNumber}</div>
               </div>
               <div className="invoice-Date">Due Date
-                <div className="invoice-Date-Value">{invoice.dueDate}</div>
+                <div className="invoice-Date-Value">{invoice.dueDate || 'Not Specified'}</div>
               </div>
               <div className="invoice-Amount">Amount
-                <div className="invoice-Amount-value">{invoice.amount}</div>
+                <div className="invoice-Amount-value">  
+                  {typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A'}</div>
               </div>
             </div>
           </div>

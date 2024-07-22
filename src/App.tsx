@@ -1,39 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CardView from './Components/CardView';
 import ListView from './Components/ListView';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate } from '@fortawesome/free-solid-svg-icons';
 import SearchBar from './Components/SearchButton';
 import './App.css';
-
-interface Invoice {
-  vendor: string;
-  invoiceNumber: string;
-  dueDate: string;
-  amount: string;
-  status: string;
-  statusText: string;
-  object: string;
-}
-
-const invoices: Invoice[] = [
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'few-issues', statusText: 'Few Issues', object: 'notlastchild' },
-  { vendor: 'Mango farms by Supriya', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Guns n Roses', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Guns n Roses', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'few-issues', statusText: 'Few Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'few-issues', statusText: 'Few Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'no-issues', statusText: 'No Issues', object: 'notlastchild' },
-  { vendor: 'Simpson and Bros Company', invoiceNumber: '28937625142', dueDate: '23 Dec, 2024', amount: '₹ 67,39,289.19', status: 'few-issues', statusText: 'Few Issues', object: 'lastchild' }
-];
+import { Invoice } from './types';
 
 const App: React.FC = () => {
   const [view, setView] = useState<string>('card');
   const [activeTab, setActiveTab] = useState<string>('inbox');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [time, setTime] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+
+  useEffect(() => {
+    fetch('https://dev.rubix.api.pantheon-hub.tech/rubix/api/invoice/v1/invoice?invoice_status=DRAFT', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-USER-ID': 'USER240716121722L70GZEH7S9',
+        'X-CLIENT-ID': 'CLIENT240619182925MLCJKQGFMN'
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('API Data:', data);
+        if (data && data.invoiceListingDtos) {
+          const extractedInvoices: Invoice[] = data.invoiceListingDtos.map((invoice: any) => ({
+            vendorName: invoice.vendorName,
+            invoiceDifficulty: invoice.invoiceDifficulty,
+            dueDate: invoice.dueDate,
+            invoiceNumber: invoice.invoiceNumber,
+            poNumbers: invoice.poNumbers,
+            invoiceStatus: invoice.invoiceStatus,
+            totalAmount: invoice.totalAmount
+          }));
+          setInvoices(extractedInvoices);
+        } else {
+          throw new Error('API response does not contain invoiceListingDtos');
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -53,12 +74,24 @@ const App: React.FC = () => {
     setTime(strTime);
   };
 
-  const filteredInvoices = invoices.filter(invoice =>
-    invoice.vendor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.dueDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    invoice.amount.toLowerCase().includes(searchQuery.toLowerCase())
-  ).map(invoice => ({ ...invoice, searchQuery }));
+  const filteredInvoices = invoices.filter(invoice => {
+    const vendorName = invoice.vendorName.toLowerCase();
+    const invoiceNumber = invoice.invoiceNumber.toLowerCase();
+    const dueDate = invoice.dueDate;
+    const invoiceDifficulty = invoice.invoiceDifficulty.toLowerCase();
+    const poNumbers = invoice.poNumbers;
+    const totalAmount = invoice.totalAmount;
+    const invoiceStatus = invoice.invoiceStatus.toLowerCase();
+    const queryLower = searchQuery.toLowerCase();
+
+    return (vendorName && vendorName.includes(queryLower)) ||
+           (invoiceNumber && invoiceNumber.includes(queryLower))||
+           (dueDate) ||
+           (invoiceDifficulty && invoiceDifficulty.includes(queryLower))||
+           (poNumbers && poNumbers)||
+           (totalAmount)||
+           (invoiceStatus && invoiceStatus.includes(queryLower));
+  });
 
   return (
     <div className="app">

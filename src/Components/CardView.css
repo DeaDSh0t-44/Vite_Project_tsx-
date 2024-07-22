@@ -34,6 +34,7 @@
   font-size: 14px;
   padding: 10px;
   display: flex;
+  justify-content: space-between  ;
   font-family: 'Figtree', sans-serif;
 }
 
@@ -45,6 +46,7 @@
   font-weight: 600;
   text-transform: uppercase;
   word-wrap: break-word;
+  width: 121px;
 }
 
 .invoice-Number-value {
@@ -122,6 +124,30 @@
   width: 15%;
   height: 10%;
   color: #309054;
+  font-size: 8px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.status.LOW {
+  background-color: #EFFFF5;
+  border: 1px solid #CCEBD7;
+  width: 15%;
+  height: 10%;
+  color: #309054;
+  font-size: 8px;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.status.MEDIUM {
+  background-color: #FFF9ED;
+  border: 1px solid #FEEDC3;
+  width: 15%;
+  height: 10%;
+  color: #EE9D2B;
   font-size: 8px;
   font-family: 'Figtree', sans-serif;
   font-weight: 500;

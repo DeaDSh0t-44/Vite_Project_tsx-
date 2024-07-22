@@ -1,16 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Tabs from './Tabs';
 import './ListView.css';
+import { Invoice } from '../types';
 
-interface Invoice {
-  vendor: string;
-  status: string;
-  statusText: string;
-  invoiceNumber: string;
-  dueDate: string;
-  amount: string;
-  object: string;
-}
 
 interface ListViewProps {
   invoices: Invoice[];
@@ -92,12 +84,22 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
           </thead>
           <tbody>
             {invoices.map((invoice, index) => (
-              <tr key={index}>
-                <td className={`VendorName-Value ${invoice.object}`}>{invoice.vendor}</td>
-                <td className={`Number-Value ${invoice.object}`}>{invoice.invoiceNumber}</td>
-                <td className={`dueDate-Value ${invoice.object}`}>{invoice.dueDate}</td>
-                <td className={`Amount-Value ${invoice.object}`}>{invoice.amount}</td>
-                <td className={`Status-Value ${invoice.object}`}>{invoice.statusText}</td>
+              <tr key={index} className={index === invoices.length - 1 ? 'last-row' : ''}>
+                <td className={`VendorName-Value ${index === invoices.length - 1 ? 'last-vendor-cell' : ''}`}>
+                {invoice.vendorInformation && invoice.vendorInformation.vendorName || 'Unknown Vendor'}
+                </td>
+                <td className={`Number-Value `}>
+                  {invoice.invoiceNumber}
+                </td>
+                <td className={`dueDate-Value`}>
+                {invoice.dueDate || 'Not Specified'}
+                </td>
+                <td className={`Amount-Value `}>
+                {typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A'}
+                </td>
+                <td className={`Status-Value `}>
+                {invoice.invoiceDifficulty.charAt(0).toUpperCase() +  invoice.invoiceDifficulty.slice(1).toLowerCase()}
+                </td>
               </tr>
             ))}
           </tbody>
