@@ -84,12 +84,13 @@
   font-weight: 600;
   text-transform: uppercase;
   word-wrap: break-word;
+  width: 72px;
 }
 
 .invoice-Amount-value {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
   width: 100%;
   color: #4B5563;
   font-size: 14px;
