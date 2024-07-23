@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [searchVisible, setSearchVisible] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
     fetch('https://dev.rubix.api.pantheon-hub.tech/rubix/api/invoice/v1/invoice?invoice_status=DRAFT', {
@@ -108,7 +109,9 @@ const App: React.FC = () => {
             <button onClick={getTimeIn12HourFormat} className="Sync-button"><FontAwesomeIcon icon={faRotate} /></button>
           </div>
           <div className="search-container">
-            <button onClick={() => setSearchVisible(!searchVisible)} className="search-button">
+            <button onClick={() => {setSearchVisible(!searchVisible)
+                                    setIsSelected(!isSelected)
+            }} className={isSelected ? 'search-button' : 'search-button-not-selected'}>
               <FontAwesomeIcon icon={faSearch} className="search-button-icon" />
             </button>
           </div>
@@ -124,8 +127,10 @@ const App: React.FC = () => {
                   placeholder="Search for PO/ Vendor/ Invoice"
                   className="search-input"
                 />
-                <button onClick={() => setSearchVisible(!searchVisible)} className="close-button">
-                <FontAwesomeIcon icon= {faXmark} className="close-button-icon"/>
+                <button onClick={() => {setSearchVisible(!searchVisible)
+                                        setIsSelected(!isSelected)
+                }} className="close-button">
+                <FontAwesomeIcon icon= {faXmark} className={isSelected ? 'search-button-icon' : 'search-button-icon-not-selected'}/>
                 </button>
               </div>
             )}

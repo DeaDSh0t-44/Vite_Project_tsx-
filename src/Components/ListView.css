@@ -70,6 +70,7 @@ td {
   line-height: 30px !important;
   overflow: hidden;
   box-sizing: border-box;
+  width: 180px;
 }
 
 .VendorName-Value {

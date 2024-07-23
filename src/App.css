@@ -116,16 +116,28 @@ header {
 }
 
 .search-button {
-  background: #FCF8FD;
+  background: #7F568F;
   border: none;
   cursor: pointer;
   padding: 8px;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 15px;
   width: 30px; 
+  height: 30px;
+}
+
+.search-button-not-selected {
+  background: #FCF8FD;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  width: 30px;
   height: 30px;
 }
 
@@ -158,7 +170,13 @@ header {
 .search-button-icon {
   width: 15px;
   height: 15px;
-  color: #7F568F;
+  color: #ffffff;
+}
+
+.search-button-icon-not-selected {
+  width: 15px;
+  height: 15px;
+  color: #FF0000;
 }
 
 .close-button {
