@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('inbox');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [time, setTime] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);  
   const [error, setError] = useState<string | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [searchVisible, setSearchVisible] = useState(false);
@@ -144,6 +144,7 @@ const App: React.FC = () => {
             setView={setView}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            searchQuery={searchQuery}
           />
         ) : (
           <ListView
@@ -152,6 +153,7 @@ const App: React.FC = () => {
             setView={setView}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            searchQuery={searchQuery}
           />
         )}
       </div>

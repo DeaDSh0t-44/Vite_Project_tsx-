@@ -162,3 +162,10 @@
   font-weight: 600;
   word-wrap: break-word;
 }
+
+.no-results {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+  padding: 20px;
+}

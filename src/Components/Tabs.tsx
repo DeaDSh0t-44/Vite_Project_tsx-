@@ -13,7 +13,6 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ view, setView, activeTab, setActiveTab }) => {
   const handleSetActiveTab = (tab: string) => {
     setActiveTab(tab);
-    // Remove this line: setView(tab);
   };
 
   return (

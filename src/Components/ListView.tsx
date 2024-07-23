@@ -3,16 +3,16 @@ import Tabs from './Tabs';
 import './ListView.css';
 import { Invoice } from '../types';
 
-
 interface ListViewProps {
   invoices: Invoice[];
   view: string;
   setView: (view: string) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  searchQuery: string;
 }
 
-const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab, setActiveTab }) => {
+const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab, setActiveTab, searchQuery }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -54,10 +54,20 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     }
   }, []);
 
-  useEffect(() => {
-    console.log('Invoices:', invoices);
-  }, [invoices]);
+  // Function to check if a text matches the search query
+  const isMatch = (text: string | number) => text.toString().toLowerCase().includes(searchQuery.toLowerCase());
 
+  // Filter invoices based on search query
+  const filteredInvoices = invoices.filter(invoice => {
+    const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
+    const invoiceNumber = invoice.invoiceNumber;
+    const dueDate = invoice.dueDate || 'Not Specified';
+    const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
+    const invoiceDifficulty = invoice.invoiceDifficulty;
+
+    // Return true if any field matches the search query
+    return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
+  });
 
   return (
     <div className="list-view">
@@ -74,25 +84,45 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
             </tr>
           </thead>
           <tbody>
-            {invoices.map((invoice, index) => (
-              <tr key={index} className={index === invoices.length - 1 ? 'last-row' : ''}>
-                <td className={`VendorName-Value ${index === invoices.length - 1 ? 'last-vendor-cell' : ''}`}>
-                {invoice.vendorInformation && invoice.vendorInformation.vendorName || 'Unknown Vendor'}
-                </td>
-                <td className={`Number-Value `}>
-                  {invoice.invoiceNumber}
-                </td>
-                <td className={`dueDate-Value`}>
-                {invoice.dueDate || 'Not Specified'}
-                </td>
-                <td className={`Amount-Value `}>
-                {typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A'}
-                </td>
-                <td className={`Status-Value `}>
-                {invoice.invoiceDifficulty.charAt(0).toUpperCase() +  invoice.invoiceDifficulty.slice(1).toLowerCase()}
-                </td>
+            {filteredInvoices.length > 0 ? (
+              filteredInvoices.map((invoice, index) => {
+                const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
+                const invoiceNumber = invoice.invoiceNumber;
+                const dueDate = invoice.dueDate || 'Not Specified';
+                const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
+                const invoiceDifficulty = invoice.invoiceDifficulty;
+
+                const highlightVendorName = isMatch(vendorName);
+                const highlightInvoiceNumber = isMatch(invoiceNumber);
+                const highlightDueDate = isMatch(dueDate);
+                const highlightAmount = isMatch(totalAmount);
+                const highlightStatus = isMatch(invoiceDifficulty);
+
+                return (
+                  <tr key={index} className={index === filteredInvoices.length - 1 ? 'last-row' : ''}>
+                    <td className={`VendorName-Value ${highlightVendorName ? 'highlight' : ''}`}>
+                      {vendorName}
+                    </td>
+                    <td className={`Number-Value ${highlightInvoiceNumber ? 'highlight' : ''}`}>
+                      {invoiceNumber}
+                    </td>
+                    <td className={`dueDate-Value ${highlightDueDate ? 'highlight' : ''}`}>
+                      {dueDate}
+                    </td>
+                    <td className={`Amount-Value ${highlightAmount ? 'highlight' : ''}`}>
+                      {totalAmount}
+                    </td>
+                    <td className={`Status-Value ${highlightStatus ? 'highlight' : ''}`}>
+                      {invoiceDifficulty.charAt(0).toUpperCase() + invoiceDifficulty.slice(1).toLowerCase()}
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={5} className="no-results">No results found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
