@@ -141,6 +141,12 @@ header {
   height: 30px;
 }
 
+.search-button-icon-not-selected {
+  width: 15px;
+  height: 15px;
+  color: #7F568F;
+}
+
 .search-input-container {
   display: flex;
   align-items: center;
@@ -171,12 +177,6 @@ header {
   width: 15px;
   height: 15px;
   color: #ffffff;
-}
-
-.search-button-icon-not-selected {
-  width: 15px;
-  height: 15px;
-  color: #FF0000;
 }
 
 .close-button {
