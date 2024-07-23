@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('inbox');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [time, setTime] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);  
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [searchVisible, setSearchVisible] = useState(false);
@@ -99,42 +99,52 @@ const App: React.FC = () => {
            (invoiceStatus && invoiceStatus.includes(queryLower)));
   });
 
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchVisible(false);
+    setIsSelected(false);
+  };
+
   return (
     <div className="app">
       <div className="head">
-        <div className= "head-element"><header>
-          <div className="info">
-            <h1 className="Heading">Invoices</h1>
-            {time && <div className="Sync">last synced at {time}</div>}
-            <button onClick={getTimeIn12HourFormat} className="Sync-button"><FontAwesomeIcon icon={faRotate} /></button>
-          </div>
-          <div className="search-container">
-            <button onClick={() => {setSearchVisible(!searchVisible)
-                                    setIsSelected(!isSelected)
-            }} className={isSelected ? 'search-button' : 'search-button-not-selected'}>
-              <FontAwesomeIcon icon={faSearch} className={isSelected ? 'search-button-icon' : 'search-button-icon-not-selected'} />
-            </button>
-          </div>
-        </header>
-        <div className="LoginInfo"></div>
+        <div className="head-element">
+          <header>
+            <div className="info">
+              <h1 className="Heading">Invoices</h1>
+              {time && <div className="Sync">last synced at {time}</div>}
+              <button onClick={getTimeIn12HourFormat} className="Sync-button">
+                <FontAwesomeIcon icon={faRotate} />
+              </button>
+            </div>
+            <div className="search-container">
+              <button
+                onClick={() => {
+                  setSearchVisible(!searchVisible);
+                  setIsSelected(!isSelected);
+                }}
+                className={isSelected ? 'search-button' : 'search-button-not-selected'}
+              >
+                <FontAwesomeIcon icon={faSearch} className={isSelected ? 'search-button-icon' : 'search-button-icon-not-selected'} />
+              </button>
+            </div>
+          </header>
+          <div className="LoginInfo"></div>
         </div>
         {searchVisible && (
-              <div className="search-input-container">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  placeholder="Search for PO/ Vendor/ Invoice"
-                  className="search-input"
-                />
-                <button onClick={() => {setSearchVisible(!searchVisible)
-                                        setIsSelected(!isSelected)
-                }} className="close-button">
-                <FontAwesomeIcon icon= {faXmark} className = "close-button-icon"/>
-                </button>
-              </div>
-            )}
-        
+          <div className="search-input-container">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search for PO/ Vendor/ Invoice"
+              className="search-input"
+            />
+            <button onClick={clearSearch} className="close-button">
+              <FontAwesomeIcon icon={faXmark} className="close-button-icon" />
+            </button>
+          </div>
+        )}
       </div>
       <div className="content">
         {view === 'card' ? (
