@@ -58,15 +58,6 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     console.log('Invoices:', invoices);
   }, [invoices]);
 
-  const highlightText = (text: string, query: string) => {
-    if (!query) {
-      return text;
-    }
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
-    return parts.map((part, index) =>
-      part.toLowerCase() === query.toLowerCase() ? <strong key={index}>{part}</strong> : part
-    );
-  };
 
   return (
     <div className="list-view">

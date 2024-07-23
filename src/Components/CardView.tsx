@@ -12,16 +12,6 @@ interface CardViewProps {
   setActiveTab: (tab: string) => void;
 }
 
-const highlightText = (text: string, query: string) => {
-  if (!query) {
-    return text;
-  }
-  const parts = text.split(new RegExp(`(${query})`, 'gi'));
-  return parts.map((part, index) =>
-    part.toLowerCase() === query.toLowerCase() ? <i key={index} className="search-item">{part}</i> : part
-  );
-};
-
 const CardView: React.FC<CardViewProps> = ({ invoices, view, setView, activeTab, setActiveTab }) => {
   return (
     <div className="card-view">
