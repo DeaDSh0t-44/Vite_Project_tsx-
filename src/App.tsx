@@ -130,7 +130,7 @@ const App: React.FC = () => {
                 <button onClick={() => {setSearchVisible(!searchVisible)
                                         setIsSelected(!isSelected)
                 }} className="close-button">
-                <FontAwesomeIcon icon= {faXmark} className={isSelected ? 'search-button-icon' : 'search-button-icon-not-selected'}/>
+                <FontAwesomeIcon icon= {faXmark} className = "close-button-icon"/>
                 </button>
               </div>
             )}
