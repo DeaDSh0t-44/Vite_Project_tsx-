@@ -1,8 +1,5 @@
 @import url('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 
-.contenet{
-  
-}
 .list-view {
   overflow-x: scroll;
   width: 100%;
@@ -283,3 +280,8 @@ body {
   color: #888;
   padding: 20px;
 }
+
+.highlight {
+  font-weight: bold;
+}
+

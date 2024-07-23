@@ -57,6 +57,15 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
   // Function to check if a text matches the search query
   const isMatch = (text: string | number) => text.toString().toLowerCase().includes(searchQuery.toLowerCase());
 
+  // Function to highlight matched text
+  const highlightText = (text: string | number) => {
+    const str = text.toString();
+    const parts = str.split(new RegExp(`(${searchQuery})`, 'gi'));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchQuery.toLowerCase() ? <span key={index} className="highlight">{part}</span> : part
+    );
+  };
+
   // Filter invoices based on search query
   const filteredInvoices = invoices.filter(invoice => {
     const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
@@ -65,7 +74,6 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
     const invoiceDifficulty = invoice.invoiceDifficulty;
 
-    // Return true if any field matches the search query
     return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
   });
 
@@ -85,39 +93,25 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
           </thead>
           <tbody>
             {filteredInvoices.length > 0 ? (
-              filteredInvoices.map((invoice, index) => {
-                const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
-                const invoiceNumber = invoice.invoiceNumber;
-                const dueDate = invoice.dueDate || 'Not Specified';
-                const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
-                const invoiceDifficulty = invoice.invoiceDifficulty;
-
-                const highlightVendorName = isMatch(vendorName);
-                const highlightInvoiceNumber = isMatch(invoiceNumber);
-                const highlightDueDate = isMatch(dueDate);
-                const highlightAmount = isMatch(totalAmount);
-                const highlightStatus = isMatch(invoiceDifficulty);
-
-                return (
-                  <tr key={index} className={index === filteredInvoices.length - 1 ? 'last-row' : ''}>
-                    <td className={`VendorName-Value ${highlightVendorName ? 'highlight' : ''}`}>
-                      {vendorName}
-                    </td>
-                    <td className={`Number-Value ${highlightInvoiceNumber ? 'highlight' : ''}`}>
-                      {invoiceNumber}
-                    </td>
-                    <td className={`dueDate-Value ${highlightDueDate ? 'highlight' : ''}`}>
-                      {dueDate}
-                    </td>
-                    <td className={`Amount-Value ${highlightAmount ? 'highlight' : ''}`}>
-                      {totalAmount}
-                    </td>
-                    <td className={`Status-Value ${highlightStatus ? 'highlight' : ''}`}>
-                      {invoiceDifficulty.charAt(0).toUpperCase() + invoiceDifficulty.slice(1).toLowerCase()}
-                    </td>
-                  </tr>
-                );
-              })
+              filteredInvoices.map((invoice, index) => (
+                <tr key={index} className={index === filteredInvoices.length - 1 ? 'last-row' : ''}>
+                  <td className={`VendorName-Value`}>
+                    {highlightText(invoice.vendorInformation?.vendorName || 'Unknown Vendor')}
+                  </td>
+                  <td className={`Number-Value`}>
+                    {highlightText(invoice.invoiceNumber)}
+                  </td>
+                  <td className={`dueDate-Value`}>
+                    {highlightText(invoice.dueDate || 'Not Specified')}
+                  </td>
+                  <td className={`Amount-Value`}>
+                    {highlightText(typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A')}
+                  </td>
+                  <td className={`Status-Value`}>
+                    {highlightText(invoice.invoiceDifficulty.charAt(0).toUpperCase() + invoice.invoiceDifficulty.slice(1).toLowerCase())}
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
                 <td colSpan={5} className="no-results">No results found</td>
