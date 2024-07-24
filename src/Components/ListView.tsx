@@ -54,10 +54,8 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     }
   }, []);
 
-  // Function to check if a text matches the search query
   const isMatch = (text: string | number) => text.toString().toLowerCase().includes(searchQuery.toLowerCase());
 
-  // Function to highlight matched text
   const highlightText = (text: string | number) => {
     const str = text.toString();
     const parts = str.split(new RegExp(`(${searchQuery})`, 'gi'));
@@ -66,12 +64,11 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     );
   };
 
-  // Filter invoices based on search query
   const filteredInvoices = invoices.filter(invoice => {
     const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
     const invoiceNumber = invoice.invoiceNumber;
     const dueDate = invoice.dueDate || 'Not Specified';
-    const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
+    const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
     const invoiceDifficulty = invoice.invoiceDifficulty;
 
     return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
@@ -80,7 +77,7 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
   return (
     <div className="list-view">
       <Tabs view={view} setView={setView} activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="table-wrapper" ref={scrollContainerRef}>
+      {filteredInvoices.length !== 0 && <div className="table-wrapper" ref={scrollContainerRef}>
         <table className="Table">
           <thead>
             <tr>
@@ -105,7 +102,7 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
                     {highlightText(invoice.dueDate || 'Not Specified')}
                   </td>
                   <td className={`Amount-Value`}>
-                    {highlightText(typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A')}
+                  {highlightText(typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A')}
                   </td>
                   <td className={`Status-Value`}>
                     {highlightText(invoice.invoiceDifficulty.charAt(0).toUpperCase() + invoice.invoiceDifficulty.slice(1).toLowerCase())}
@@ -114,13 +111,18 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="no-results">No results found</td>
+                <td colSpan={5} className="no-results"></td>
               </tr>
             )}
           </tbody>
         </table>
-      </div>
-      <div className="scroll-buttons">
+      </div>}
+      {filteredInvoices.length === 0 && (
+        <div className = "no-results">
+          No Results found
+        </div>
+      )}
+      { filteredInvoices.length !== 0 && <div className="scroll-buttons">
         <button
           className="scroll-button-Prev"
           onClick={handlePrevClick}
@@ -135,7 +137,7 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
         >
           Next {'>'}
         </button>
-      </div>
+      </div>}
     </div>
   );
 };

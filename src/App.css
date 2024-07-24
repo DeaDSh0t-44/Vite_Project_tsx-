@@ -197,3 +197,19 @@ header {
 .head {
   border-bottom: 2px solid #F3F4F6;
 }
+
+.result {
+  font-family: 'Figtree', sans-serif;
+  font-weight: 400;
+  color: #64748B;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding-top: 5px;
+  padding-left: 13px;
+}
+
+.search-query {
+  font-weight: bold;
+}

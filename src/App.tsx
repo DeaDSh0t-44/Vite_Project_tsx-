@@ -90,6 +90,12 @@ const App: React.FC = () => {
     const invoiceStatus = invoice.invoiceStatus.toLowerCase();
     const queryLower = searchQuery.toLowerCase();
 
+    if(activeTab === 'processed'){
+      if(invoiceStatus !== 'processed'){
+        return false;
+      }
+    }
+
     return ((vendorName && vendorName.includes(queryLower)) ||
            (invoiceNumber && invoiceNumber.includes(queryLower))||
            (dueDate) ||
@@ -103,6 +109,12 @@ const App: React.FC = () => {
     setSearchQuery('');
     setSearchVisible(false);
     setIsSelected(false);
+  };
+
+  const handleToggleSearch = () => {
+    setSearchVisible(!searchVisible); 
+    setIsSelected(!isSelected); 
+    clearSearch(); 
   };
 
   return (
@@ -131,8 +143,8 @@ const App: React.FC = () => {
           </header>
           <div className="LoginInfo"></div>
         </div>
-        {searchVisible && (
-          <div className="search-input-container">
+        {searchVisible && ( 
+            <div className="search-input-container">
             <input
               type="text"
               value={searchQuery}
@@ -147,6 +159,11 @@ const App: React.FC = () => {
         )}
       </div>
       <div className="content">
+        {searchVisible && (
+          <div className="result">
+            Showing results for: <span className = "search-query">{searchQuery}</span> 
+          </div>
+        )}
         {view === 'card' ? (
           <CardView
             invoices={filteredInvoices}

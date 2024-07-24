@@ -48,7 +48,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, view, setView, activeTab,
           const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
           const invoiceNumber = invoice.invoiceNumber;
           const dueDate = invoice.dueDate || 'Not Specified';
-          const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
+          const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
           const invoiceDifficulty = invoice.invoiceDifficulty;
 
           return (
@@ -76,7 +76,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, view, setView, activeTab,
                   <div className="invoice-Amount">
                     Amount
                     <div className="invoice-Amount-value">
-                      {highlightText(totalAmount)}
+                    {highlightText(totalAmount)}
                     </div>
                   </div>
                 </div>
