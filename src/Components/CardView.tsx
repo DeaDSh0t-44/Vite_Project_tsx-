@@ -51,7 +51,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
   const filteredInvoices = invoices.filter(invoice => {
     const vendorName = invoice?.vendorName || 'Unknown Vendor';
     const invoiceNumber = invoice.invoiceNumber;
-    const dueDate = invoice.dueDate || 'Not Specified';
+    const dueDate = (formatDate(invoice.dueDate))|| 'Not Specified';
     const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
     const invoiceDifficulty = invoice.invoiceDifficulty;
 
@@ -61,7 +61,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
   const filteredProcessedInvoices = processedinvoices.filter(processedinvoices => {
     const vendorName = processedinvoices.vendorName || 'Unknown Vendor';
     const invoiceNumber = processedinvoices.invoiceNumber;
-    const dueDate = processedinvoices.dueDate || 'Not Specified';
+    const dueDate = (formatDate(processedinvoices.dueDate)) || 'Not Specified';
     const totalAmount = typeof processedinvoices.totalAmount === 'number' ? processedinvoices.totalAmount.toFixed(2) : 'N/A';
     const invoiceDifficulty = processedinvoices.invoiceDifficulty;
 
@@ -75,7 +75,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
         filteredInvoices.map((invoice, index) => {
           const vendorName = invoice?.vendorName || 'Unknown Vendor';
           const invoiceNumber = invoice.invoiceNumber;
-          const dueDate = invoice.dueDate || 'Not Specified';
+          const dueDate = (formatDate(invoice.dueDate)) || 'Not Specified';
           const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
           const invoiceDifficulty = invoice.invoiceDifficulty;
 
@@ -116,7 +116,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
         filteredProcessedInvoices.map((invoice, index) => {
           const vendorName = invoice.vendorName || 'Unknown Vendor';
           const invoiceNumber = invoice.invoiceNumber;
-          const dueDate = invoice.dueDate || 'Not Specified';
+          const dueDate = (formatDate(invoice.dueDate)) || 'Not Specified';
           const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
           const invoiceDifficulty = invoice.invoiceDifficulty;
 
