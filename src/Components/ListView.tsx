@@ -49,16 +49,15 @@ const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, 
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll);
-      handleScroll(); // Initial calculation
+      handleScroll();
       return () => {
         scrollContainer.removeEventListener('scroll', handleScroll);
       };
     }
-  }, [activeTab]); // Recalculate on tab change
+  }, [activeTab]);
 
   const handleTabChange = (newTab: string) => {
     setActiveTab(newTab);
-    // Optionally reset scroll position when tab changes
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft = 0;
     }
@@ -74,8 +73,28 @@ const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, 
     );
   };
 
+  const formatDate = (dateString: string) => {
+    const dateObject = new Date(dateString);
+  
+    const day = dateObject.getDate();
+    const monthIndex = dateObject.getMonth();
+    const year = dateObject.getFullYear();
+  
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+  
+    const monthName = months[monthIndex];
+    
+    const monthNameFormat = monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+    const dayFormatted = day.toString().padStart(2, '0');
+
+    return `${dayFormatted} ${monthNameFormat}, ${year}`;
+  };
+
   const filteredInvoices = invoices.filter(invoice => {
-    const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
+    const vendorName = invoice?.vendorName || 'Unknown Vendor';
     const invoiceNumber = invoice.invoiceNumber;
     const dueDate = invoice.dueDate || 'Not Specified';
     const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
@@ -113,13 +132,13 @@ const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, 
               {filteredInvoices.map((invoice, index) => (
                 <tr key={index} className={index === filteredInvoices.length - 1 ? 'last-row' : ''}>
                   <td className="VendorName-Value">
-                    {highlightText(invoice.vendorInformation?.vendorName || 'Unknown Vendor')}
+                    {highlightText(invoice?.vendorName || 'Unknown Vendor')}
                   </td>
                   <td className="Number-Value">
                     {highlightText(invoice.invoiceNumber)}
                   </td>
                   <td className="dueDate-Value">
-                    {highlightText(invoice.dueDate || 'Not Specified')}
+                    {highlightText(formatDate(invoice.dueDate || 'Not Specified'))}
                   </td>
                   <td className="Amount-Value">
                     {highlightText(typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A')}
@@ -155,7 +174,7 @@ const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, 
                     {highlightText(processedInvoice.invoiceNumber)}
                   </td>
                   <td className="dueDate-Value">
-                    {highlightText(processedInvoice.dueDate || 'Not Specified')}
+                    {highlightText(formatDate(processedInvoice.dueDate || 'Not Specified'))}
                   </td>
                   <td className="Amount-Value">
                     {highlightText(typeof processedInvoice.totalAmount === 'number' ? `₹ ${processedInvoice.totalAmount.toFixed(2)}` : 'N/A')}

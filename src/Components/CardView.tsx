@@ -15,14 +15,12 @@ interface CardViewProps {
 }
 
 const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, setView, activeTab, setActiveTab, searchQuery }) => {
-  // Function to check if a text matches the search query
   const isMatch = (text: string | number) => text.toString().toLowerCase().includes(searchQuery.toLowerCase());
 
-  // Function to highlight matched text
   const highlightText = (text: string | number) => {
     const str = text.toString();
     if (!searchQuery) {
-      return str; // Return text as-is if there's no search query
+      return str; 
     }
     const parts = str.split(new RegExp(`(${searchQuery})`, 'gi'));
     return parts.map((part, index) =>
@@ -30,15 +28,33 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
     );
   };
 
-  // Filter invoices and processed invoices based on search query
+  const formatDate = (dateString: string) => {
+    const dateObject = new Date(dateString);
+  
+    const day = dateObject.getDate();
+    const monthIndex = dateObject.getMonth();
+    const year = dateObject.getFullYear();
+  
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+  
+    const monthName = months[monthIndex];
+
+    const monthNameFormat = monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+    const dayFormatted = day.toString().padStart(2, '0');
+    
+    return `${dayFormatted} ${monthNameFormat}, ${year}`;
+  };
+
   const filteredInvoices = invoices.filter(invoice => {
-    const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
+    const vendorName = invoice?.vendorName || 'Unknown Vendor';
     const invoiceNumber = invoice.invoiceNumber;
     const dueDate = invoice.dueDate || 'Not Specified';
     const totalAmount = typeof invoice.totalAmount === 'number' ? invoice.totalAmount.toFixed(2) : 'N/A';
     const invoiceDifficulty = invoice.invoiceDifficulty;
 
-    // Return true if any field matches the search query
     return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
   });
 
@@ -49,7 +65,6 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
     const totalAmount = typeof processedinvoices.totalAmount === 'number' ? processedinvoices.totalAmount.toFixed(2) : 'N/A';
     const invoiceDifficulty = processedinvoices.invoiceDifficulty;
 
-    // Return true if any field matches the search query
     return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
   });
 
@@ -58,7 +73,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
       <Tabs view={view} setView={setView} activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'inbox' && filteredInvoices.length > 0 ? (
         filteredInvoices.map((invoice, index) => {
-          const vendorName = invoice.vendorInformation?.vendorName || 'Unknown Vendor';
+          const vendorName = invoice?.vendorName || 'Unknown Vendor';
           const invoiceNumber = invoice.invoiceNumber;
           const dueDate = invoice.dueDate || 'Not Specified';
           const totalAmount = typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A';
@@ -83,7 +98,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
                   <div className="invoice-Date">
                     Due Date
                     <div className="invoice-Date-Value">
-                      {highlightText(dueDate)}
+                      {highlightText(formatDate(invoice.dueDate || 'Not Specified'))}
                     </div>
                   </div>
                   <div className="invoice-Amount">
@@ -124,7 +139,7 @@ const CardView: React.FC<CardViewProps> = ({ invoices, processedinvoices, view, 
                   <div className="invoice-Date">
                     Due Date
                     <div className="invoice-Date-Value">
-                      {highlightText(dueDate)}
+                      {highlightText(formatDate(invoice.dueDate || 'Not Specified'))}
                     </div>
                   </div>
                   <div className="invoice-Amount">

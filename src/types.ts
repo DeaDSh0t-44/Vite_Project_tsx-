@@ -1,12 +1,12 @@
 
 export interface VendorInformation {
     vendorCode: string;
-    vendorName: string;
     gstin: string;
     siteId: string;
   }
   
   export interface Invoice {
+    vendorName: string;
     invoiceNumber: string;
     invoiceStatus: string;
     dueDate: string;
