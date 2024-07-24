@@ -18,6 +18,8 @@ const App: React.FC = () => {
   const [processedinvoices, setProcessedInvoices] = useState<ProcessedInvoice[]>([]);
   const [searchVisible, setSearchVisible] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshProcessedKey, setRefreshProcessedKey] = useState(0);
 
   useEffect(() => {
     fetch('https://dev.rubix.api.pantheon-hub.tech/rubix/api/invoice/v1/invoice?invoice_status=DRAFT', {
@@ -57,7 +59,7 @@ const App: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+  }, [refreshKey]);
 
   useEffect(() => {
     fetch('https://dev.rubix.api.pantheon-hub.tech/rubix/api/invoice/v1/invoice?invoice_status=PROCESSED', {
@@ -99,7 +101,7 @@ const App: React.FC = () => {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+  }, [refreshProcessedKey]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -110,7 +112,7 @@ const App: React.FC = () => {
     setSearchQuery(query);
   };
 
-  const getTimeIn12HourFormat = () => {
+  const handleSyncButtonClick = () => {
     const now = new Date();
     let hours = now.getHours();
     const minutes = now.getMinutes();
@@ -122,6 +124,8 @@ const App: React.FC = () => {
     const strTime = `${hours}:${minutesStr} ${ampm}`;
 
     setTime(strTime);
+    setRefreshKey(prevKey => prevKey + 1);
+    setRefreshProcessedKey(prevPeocessedKey => prevPeocessedKey + 1);
   };
 
   const filteredInvoices = invoices.filter(invoice => {
@@ -186,7 +190,7 @@ const App: React.FC = () => {
             <div className="info">
               <h1 className="Heading">Invoices</h1>
               {time && <div className="Sync">last synced at {time}</div>}
-              <button onClick={getTimeIn12HourFormat} className="Sync-button">
+              <button onClick={handleSyncButtonClick} className="Sync-button">
                 <FontAwesomeIcon icon={faRotate} />
               </button>
             </div>

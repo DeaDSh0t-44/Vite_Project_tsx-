@@ -49,12 +49,20 @@ const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, 
     const scrollContainer = scrollContainerRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll);
-      handleScroll();
+      handleScroll(); // Initial calculation
       return () => {
         scrollContainer.removeEventListener('scroll', handleScroll);
       };
     }
-  }, []);
+  }, [activeTab]); // Recalculate on tab change
+
+  const handleTabChange = (newTab: string) => {
+    setActiveTab(newTab);
+    // Optionally reset scroll position when tab changes
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollLeft = 0;
+    }
+  };
 
   const isMatch = (text: string | number) => text.toString().toLowerCase().includes(searchQuery.toLowerCase());
 
