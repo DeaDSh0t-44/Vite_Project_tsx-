@@ -13,6 +13,8 @@ export interface VendorInformation {
     invoiceDifficulty: string;
     totalAmount: number;
     vendorInformation: VendorInformation;
-    [key: string]: any; // For additional properties
+    [key: string]: any; 
   }
+
+
   

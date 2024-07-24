@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Tabs from './Tabs';
 import './ListView.css';
-import { Invoice } from '../types';
+import { Invoice} from '../types';
+import {ProcessedInvoice} from '../typesProcessed';
 
 interface ListViewProps {
   invoices: Invoice[];
+  processedinvoices: ProcessedInvoice[];
   view: string;
   setView: (view: string) => void;
   activeTab: string;
@@ -12,7 +14,7 @@ interface ListViewProps {
   searchQuery: string;
 }
 
-const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab, setActiveTab, searchQuery }) => {
+const ListView: React.FC<ListViewProps> = ({ invoices, processedinvoices, view, setView, activeTab, setActiveTab, searchQuery }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [isAtStart, setIsAtStart] = useState(true);
   const [isAtEnd, setIsAtEnd] = useState(false);
@@ -74,70 +76,114 @@ const ListView: React.FC<ListViewProps> = ({ invoices, view, setView, activeTab,
     return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
   });
 
+  const filteredProcessedInvoices = processedinvoices.filter(processedinvoices => {
+    const vendorName = processedinvoices.vendorName || 'Unknown Vendor';
+    const invoiceNumber = processedinvoices.invoiceNumber;
+    const dueDate = processedinvoices.dueDate || 'Not Specified';
+    const totalAmount = typeof processedinvoices.totalAmount === 'number' ? `₹ ${processedinvoices.totalAmount.toFixed(2)}` : 'N/A';
+    const invoiceDifficulty = processedinvoices.invoiceDifficulty;
+
+    return isMatch(vendorName) || isMatch(invoiceNumber) || isMatch(dueDate) || isMatch(totalAmount) || isMatch(invoiceDifficulty);
+  });
+
   return (
     <div className="list-view">
       <Tabs view={view} setView={setView} activeTab={activeTab} setActiveTab={setActiveTab} />
-      {filteredInvoices.length !== 0 && <div className="table-wrapper" ref={scrollContainerRef}>
-        <table className="Table">
-          <thead>
-            <tr>
-              <th className="VendorName">VENDOR NAME</th>
-              <th>INVOICE NUMBER</th>
-              <th>DUE DATE</th>
-              <th>AMOUNT</th>
-              <th className="Status">STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredInvoices.length > 0 ? (
-              filteredInvoices.map((invoice, index) => (
+      {view === 'list' && activeTab === 'inbox' && filteredInvoices.length > 0 && (
+        <div className="table-wrapper" ref={scrollContainerRef}>
+          <table className="Table">
+            <thead>
+              <tr>
+                <th className="VendorName">VENDOR NAME</th>
+                <th>INVOICE NUMBER</th>
+                <th>DUE DATE</th>
+                <th>AMOUNT</th>
+                <th className="Status">STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredInvoices.map((invoice, index) => (
                 <tr key={index} className={index === filteredInvoices.length - 1 ? 'last-row' : ''}>
-                  <td className={`VendorName-Value`}>
+                  <td className="VendorName-Value">
                     {highlightText(invoice.vendorInformation?.vendorName || 'Unknown Vendor')}
                   </td>
-                  <td className={`Number-Value`}>
+                  <td className="Number-Value">
                     {highlightText(invoice.invoiceNumber)}
                   </td>
-                  <td className={`dueDate-Value`}>
+                  <td className="dueDate-Value">
                     {highlightText(invoice.dueDate || 'Not Specified')}
                   </td>
-                  <td className={`Amount-Value`}>
-                  {highlightText(typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A')}
+                  <td className="Amount-Value">
+                    {highlightText(typeof invoice.totalAmount === 'number' ? `₹ ${invoice.totalAmount.toFixed(2)}` : 'N/A')}
                   </td>
-                  <td className={`Status-Value`}>
+                  <td className="Status-Value">
                     {highlightText(invoice.invoiceDifficulty.charAt(0).toUpperCase() + invoice.invoiceDifficulty.slice(1).toLowerCase())}
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="no-results"></td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>}
-      {filteredInvoices.length === 0 && (
-        <div className = "no-results">
-          No Results found
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-      { filteredInvoices.length !== 0 && <div className="scroll-buttons">
-        <button
-          className="scroll-button-Prev"
-          onClick={handlePrevClick}
-          disabled={isAtStart}
-        >
-          {'<'} Prev
-        </button>
-        <button
-          className="scroll-button-Next"
-          onClick={handleNextClick}
-          disabled={isAtEnd}
-        >
-          Next {'>'}
-        </button>
-      </div>}
+      {view === 'list' && activeTab === 'processed' && filteredProcessedInvoices.length > 0 && (
+        <div className="table-wrapper" ref={scrollContainerRef}>
+          <table className="Table">
+            <thead>
+              <tr>
+                <th className="VendorName">VENDOR NAME</th>
+                <th>INVOICE NUMBER</th>
+                <th>DUE DATE</th>
+                <th>AMOUNT</th>
+                <th className="Status">STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProcessedInvoices.map((processedInvoice, index) => (
+                <tr key={index} className={index === filteredProcessedInvoices.length - 1 ? 'last-row' : ''}>
+                  <td className="VendorName-Value">
+                    {highlightText(processedInvoice.vendorName || 'Unknown Vendor')}
+                  </td>
+                  <td className="Number-Value">
+                    {highlightText(processedInvoice.invoiceNumber)}
+                  </td>
+                  <td className="dueDate-Value">
+                    {highlightText(processedInvoice.dueDate || 'Not Specified')}
+                  </td>
+                  <td className="Amount-Value">
+                    {highlightText(typeof processedInvoice.totalAmount === 'number' ? `₹ ${processedInvoice.totalAmount.toFixed(2)}` : 'N/A')}
+                  </td>
+                  <td className="Status-Value">
+                    {highlightText(processedInvoice.invoiceDifficulty.charAt(0).toUpperCase() + processedInvoice.invoiceDifficulty.slice(1).toLowerCase())}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {(view === 'list' && activeTab === 'inbox' && filteredInvoices.length === 0) || 
+       (view === 'list' && activeTab === 'processed' && filteredProcessedInvoices.length === 0) ? (
+        <div className="no-results">No results found</div>
+      ) : null}
+      {(view === 'list' && activeTab === 'inbox' && filteredInvoices.length > 0) || 
+       (view === 'list' && activeTab === 'processed' && filteredProcessedInvoices.length > 0) ? (
+        <div className="scroll-buttons">
+          <button
+            className="scroll-button-Prev"
+            onClick={handlePrevClick}
+            disabled={isAtStart}
+          >
+            {'<'} Prev
+          </button>
+          <button
+            className="scroll-button-Next"
+            onClick={handleNextClick}
+            disabled={isAtEnd}
+          >
+            Next {'>'}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };

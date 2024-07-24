@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRotate, faSearch, faXmark } from '@fortawesome/free-solid-svg-icons';
 import './App.css';
 import { Invoice } from './types';
+import { ProcessedInvoice } from './typesProcessed';
 
 const App: React.FC = () => {
   const [view, setView] = useState<string>('card');
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [processedinvoices, setProcessedInvoices] = useState<ProcessedInvoice[]>([]);
   const [searchVisible, setSearchVisible] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
 
@@ -45,6 +47,48 @@ const App: React.FC = () => {
             totalAmount: invoice.totalAmount
           }));
           setInvoices(extractedInvoices);
+        } else {
+          throw new Error('API response does not contain invoiceListingDtos');
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error.message);
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch('https://dev.rubix.api.pantheon-hub.tech/rubix/api/invoice/v1/invoice?invoice_status=PROCESSED', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-USER-ID': 'USER240716121722L70GZEH7S9',
+        'X-CLIENT-ID': 'CLIENT240619182925MLCJKQGFMN'
+      }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('API Processed Data:', data);
+        if (data && data.invoiceListingDtos) {
+          const extractedProcessedInvoices: ProcessedInvoice[] = data.invoiceListingDtos.map((invoice: any) => ({
+            vendorName: invoice.vendorName,
+          invoiceDifficulty: invoice.invoiceDifficulty,
+          dueDate: invoice.dueDate,
+          invoiceNumber: invoice.invoiceNumber,
+          poNumbers: invoice.poNumbers,
+          totalAmount: invoice.totalAmount,
+          invoiceId: invoice.invoiceId,
+          currency: invoice.currency,
+          invoiceStatus: invoice.invoiceStatus
+          }));
+          setProcessedInvoices(extractedProcessedInvoices);
         } else {
           throw new Error('API response does not contain invoiceListingDtos');
         }
@@ -90,12 +134,6 @@ const App: React.FC = () => {
     const invoiceStatus = invoice.invoiceStatus.toLowerCase();
     const queryLower = searchQuery.toLowerCase();
 
-    if(activeTab === 'processed'){
-      if(invoiceStatus !== 'processed'){
-        return false;
-      }
-    }
-
     return ((vendorName && vendorName.includes(queryLower)) ||
            (invoiceNumber && invoiceNumber.includes(queryLower))||
            (dueDate) ||
@@ -103,6 +141,29 @@ const App: React.FC = () => {
            (poNumbers && poNumbers)||
            (totalAmount)||
            (invoiceStatus && invoiceStatus.includes(queryLower)));
+  });
+
+  const filteredProcessedInvoices = processedinvoices.filter(processedinvoices => {
+    const vendorName = processedinvoices.vendorName.toLowerCase();
+    const invoiceNumber = processedinvoices.invoiceNumber.toLowerCase();
+    const dueDate = processedinvoices.dueDate;
+    const invoiceDifficulty = processedinvoices.invoiceDifficulty.toLowerCase();
+    const poNumbers = processedinvoices.poNumbers;
+    const totalAmount = processedinvoices.totalAmount;
+    const invoiceStatus = processedinvoices.invoiceStatus.toLowerCase();
+    const invoiceId = processedinvoices.invoiceId;
+    const currency = processedinvoices.currency.toLowerCase();
+    const queryLower = searchQuery.toLowerCase();
+
+    return ((vendorName && vendorName.includes(queryLower)) ||
+           (invoiceNumber && invoiceNumber.includes(queryLower))||
+           (dueDate) ||
+           (invoiceDifficulty && invoiceDifficulty.includes(queryLower))||
+           (poNumbers && poNumbers)||
+           (totalAmount)||
+           (invoiceStatus && invoiceStatus.includes(queryLower)) ||
+           (invoiceId) ||
+           (currency && currency.includes(queryLower)));
   });
 
   const clearSearch = () => {
@@ -166,7 +227,8 @@ const App: React.FC = () => {
         )}
         {view === 'card' ? (
           <CardView
-            invoices={filteredInvoices}
+          invoices={activeTab === 'inbox' ? filteredInvoices : []}
+          processedinvoices={activeTab === 'processed' ? filteredProcessedInvoices : []}
             view={view}
             setView={setView}
             activeTab={activeTab}
@@ -175,7 +237,8 @@ const App: React.FC = () => {
           />
         ) : (
           <ListView
-            invoices={filteredInvoices}
+          invoices={activeTab === 'inbox' ? filteredInvoices : []}
+          processedinvoices={activeTab === 'processed' ? filteredProcessedInvoices : []}
             view={view}
             setView={setView}
             activeTab={activeTab}
